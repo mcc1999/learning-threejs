@@ -3,8 +3,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
 
 /**
- * 目标：PBR物理渲染-材质、灯光
- * - 法线贴图
+ * 目标：纹理加载进度
+ * LoadingManager-onStart、onProgress、onLoad、onError
 */
 
 // 1.创建场景scene和摄像头camera
@@ -12,15 +12,33 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 camera.position.set(0, 1, 2)
 
+// 创建loader管理器
+const loaderManager = new THREE.LoadingManager();
+loaderManager.onStart = () => {
+	console.log( 'Started loading files.' );
+}
+loaderManager.onProgress = (url, itemsLoaded, itemsTotal) => {
+	console.log(`Url：${url}`);
+	console.log(`Progress：${itemsLoaded} / ${itemsTotal}.`);
+	
+}
+loaderManager.onLoad = () => {
+	console.log('ALL Loaded');
+}
+loaderManager.onError = (url) => {
+	console.log( 'There was an error loading ' + url );
+}
+
+
 // 2.创建几何体
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1, 200, 200, 200)
-const texture = new THREE.TextureLoader().load('./public/images/textures/door/door.jpg');
-const alphaTexture = new THREE.TextureLoader().load('./public/images/textures/door/alpha.jpg');
-const aoTexture = new THREE.TextureLoader().load('./public/images/textures/door/ambientOcclusion.jpg')
-const displacementTexture = new THREE.TextureLoader().load('./public/images/textures/door/height.jpg')
-const roughnessTexture = new THREE.TextureLoader().load('./public/images/textures/door/roughness.jpg')
-const metalnessTexture = new THREE.TextureLoader().load('./public/images/textures/door/metalness.jpg')
-const normalTexture = new THREE.TextureLoader().load('./public/images/textures/door/normal.jpg')
+const texture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/door.jpg');
+const alphaTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/alpha.jpg');
+const aoTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/ambientOcclusion.jpg')
+const displacementTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/height.jpg')
+const roughnessTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/roughness.jpg')
+const metalnessTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/metalness.jpg')
+const normalTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/normal.jpg')
 
 const material = new THREE.MeshStandardMaterial({ 
 	map: texture,
