@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
 
 /**
- * 目标：光源-电光源
+ * 目标：光源-聚光灯
 */
 
 // 1.创建场景scene和摄像头camera
@@ -62,29 +62,31 @@ scene.add(sphere)
 // 环境光
 const ambientLight = new THREE.AmbientLight(0x404040, 0.75)
 // 聚光灯
-const pointLight = new THREE.PointLight(0x00ff00)
-pointLight.castShadow = true
-pointLight.decay = 0
+const spotLight = new THREE.SpotLight(0xffffff)
+spotLight.position.set(5, 5, 5)
+spotLight.castShadow = true
+spotLight.shadow.radius = 10
+spotLight.shadow.mapSize = new THREE.Vector2(2048, 4096)
+spotLight.target = cube
+spotLight.angle = Math.PI / 6
+spotLight.distance = 0
+spotLight.penumbra = 0
+// 需要将renderer.physicallyCorrectLights 设为true
+spotLight.decay = 0
 
-// 把点光源和小球绑定在一起
-const ball = new THREE.Mesh(
-	new THREE.SphereGeometry(0.05, 100, 100),
-	new THREE.MeshBasicMaterial({color: 0x00ff00})
-)
-const pointLightGroup = new THREE.Group()
-pointLightGroup.add(pointLight)
-pointLightGroup.add(ball)
-pointLightGroup.position.set(1,2,1)
-
-scene.add(pointLightGroup)
+scene.add(spotLight)
 scene.add(ambientLight)
 const gui = new GUI()
 // @ts-ignore
 gui.add(cube.position, 'x', -5, 5, 0.1).name('cube-x')
 // @ts-ignore
-gui.add(pointLight, 'distance', 0, 50, 0.1).name('distance')
+gui.add(spotLight, 'angle', 0, Math.PI / 2, 0.01).name('angle')
 // @ts-ignore
-gui.add(pointLight, 'decay', 0, 2, 0.01).name('decay')
+gui.add(spotLight, 'distance', 0, 50, 0.1).name('distance')
+// @ts-ignore
+gui.add(spotLight, 'penumbra', 0, 1, 0.1).name('penumbra')
+// @ts-ignore
+gui.add(spotLight, 'decay', 0, 2, 0.01).name('decay')
 
 // 3. 创建网格辅助器
 const gridHelper = new THREE.GridHelper( 10, 10 );
@@ -112,12 +114,7 @@ window.addEventListener('resize', () => {
 	renderer.setPixelRatio(window.devicePixelRatio)
 })
 
-const clock = new THREE.Clock()
-
 function animate() {
-	const time = clock.getElapsedTime()
-	pointLightGroup.position.x = Math.sin(time) * 2
-	pointLightGroup.position.z = Math.cos(time) * 2
 	// 设置了autoRotate / enableDamping = true， 需要在render函数中update()
   controls.update() 
 	renderer.render( scene, camera );
