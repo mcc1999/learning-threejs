@@ -88,17 +88,19 @@ const inputs = exampleFilenames.reduce((pre, cur, curIndex) => {
   return pre + `          '${cur}': '/src/pages/${cur}.html',\n `
 })
 const viteConfigContent = `
-  export default {
-    base: '/learning-threejs',
-    build: {
-      outDir: 'docs',
-      rollupOptions: {
-        input: {
-          ${inputs}
-        },
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  base: '/learning-threejs',
+  build: {
+    outDir: 'docs',
+    rollupOptions: {
+      input: {
+        ${inputs}
       },
-    }
+    },
   }
+})
 `
 fs.writeFileSync(viteConfigPath, viteConfigContent)
 

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
-
+const BASE_URL = import.meta.env.DEV ? '/' : '/learning-threejs'
 /**
  * 目标：几何体材质/纹理：TextureLoader加载图片/文件
 */
@@ -11,9 +11,10 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 camera.position.set(8, 4, 8)
 
+
 // 2.创建几何体
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
-const texture = new THREE.TextureLoader().load('images/door.jpeg');
+const texture = new THREE.TextureLoader().load(`${BASE_URL}images/door.jpeg`);
 const material = new THREE.MeshBasicMaterial({ map: texture })
 const mesh = new THREE.Mesh(boxGeometry, material)
 scene.add(mesh)

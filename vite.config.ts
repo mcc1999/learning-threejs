@@ -1,11 +1,13 @@
 
-  export default {
-    base: '/learning-threejs',
-    build: {
-      outDir: 'docs',
-      rollupOptions: {
-        input: {
-          '01-basic_01-main': '/src/pages/01-basic_01-main.html',
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  base: '/learning-threejs',
+  build: {
+    outDir: 'docs',
+    rollupOptions: {
+      input: {
+        '01-basic_01-main': '/src/pages/01-basic_01-main.html',
            '01-basic_02-main': '/src/pages/01-basic_02-main.html',
            '01-basic_03-main': '/src/pages/01-basic_03-main.html',
            '01-basic_04-main': '/src/pages/01-basic_04-main.html',
@@ -34,7 +36,7 @@
            '03-light_03-main': '/src/pages/03-light_03-main.html',
            '03-light_04-main': '/src/pages/03-light_04-main.html',
  
-        },
       },
-    }
+    },
   }
+})
