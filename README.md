@@ -1,5 +1,5 @@
 # Leaning Three.js by coding some examples which packaged with Vite.
-- Examples（Click to preview and view source code.）
+- Examples（Click to preview demo and view source code.）
   - 01-basic
     - [目标：创建物体步骤](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_01-main.html) / [【code】](src/examples/01-basic/01-main.ts)</span>
     - [目标：添加轨道控制器OrbitControls查看物体](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_02-main.html) / [【code】](src/examples/01-basic/02-main.ts)</span>
