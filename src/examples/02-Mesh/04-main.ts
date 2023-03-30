@@ -13,7 +13,7 @@ camera.position.set(8, 4, 8)
 
 // 2.创建几何体
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
-const texture = new THREE.TextureLoader().load('./public/images/door.jpeg');
+const texture = new THREE.TextureLoader().load('/public/images/door.jpeg');
 const material = new THREE.MeshBasicMaterial({ map: texture })
 const mesh = new THREE.Mesh(boxGeometry, material)
 scene.add(mesh)
