@@ -1,5 +1,5 @@
 export default {
-  base: '/',
+  base: '/learning-threejs',
   build: {
     outDir: 'docs',
     rollupOptions: {
