@@ -22,9 +22,6 @@ function generateHtmlFile(filePath) {
   </head>
   <body>
     <div id="app"></div>
-    <script type="module">
-      const BASE_URL = import.meta.env.DEV ? '/' : '/learning-threejs/'
-    </script>
     <script type="module" src="/${filePath}"></script>
   </body>
 </html>

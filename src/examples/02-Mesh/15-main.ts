@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import './style.css'
+const BASE_URL = import.meta.env.DEV ? '/' : '/learning-threejs/'
 
 /**
  * 目标：场景背景

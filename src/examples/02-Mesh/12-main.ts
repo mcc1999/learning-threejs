@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
+const BASE_URL = import.meta.env.DEV ? '/' : '/learning-threejs/'
 
 /**
  * 目标：PBR物理渲染-材质、灯光
