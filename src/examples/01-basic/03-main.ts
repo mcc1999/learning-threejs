@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import './style.css'
 
 /**
- * 目标1：添加辅助器
+ * 目标：添加辅助器
  * - new THREE.GridHelper( size, divisions, colorCenterLine, colorGrid );
  * - new THREE.AxesHelper( size );
  * - 辅助器就是一个物体对象，创建完需添加到场景中

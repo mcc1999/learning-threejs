@@ -3,8 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import './style.css'
 
 /**
- * 目标：物体匀速移动
- * - Clock类处理时间
+ * 目标：物体匀速移动 - Clock类处理时间
 */
 
 // 1.创建场景scene和摄像头camera

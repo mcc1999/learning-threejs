@@ -3,14 +3,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import './style.css'
 
 /**
- * 目标1：物体移动
+ * 目标：物体移动 && 物体缩放 && 物体旋转
  * - Mesh.position.set(x, y, z) 或 Mesh.position.x = 1
- * 
- * 目标2：物体缩放
  * - Mesh.scale.set(x, y, z) 或 Mesh.scale.x = 1
- * 
- * 目标3：物体旋转
- * 
+ * - Mesh.scale.set(x, y, z) 或 Mesh.scale.x = 1
+ * - Mesh.rotation.set(x, y, z) 或 Mesh.rotation.x = 1
 */
 
 // 1.创建场景scene和摄像头camera

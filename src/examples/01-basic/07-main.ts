@@ -5,7 +5,6 @@ import './style.css'
 
 /**
  * 目标：gsap设置动画效果
- * - 
 */
 
 // 1.创建场景scene和摄像头camera

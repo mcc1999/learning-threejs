@@ -4,10 +4,9 @@ import gsap from 'gsap'
 import './style.css'
 
 /**
- * 目标：轨道控制器阻尼效果
+ * 目标：轨道控制器阻尼效果 && 画面随网页大小自适应
  * - OrbitControls.enableDamping = true
  * 
- * 目标：画面随网页大小自适应
  * - camera.aspect = w / h
  * - camera.updateProjectMatrix()
  * - renderer.setSize(w, h) 
