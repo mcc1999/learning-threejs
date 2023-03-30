@@ -108,7 +108,7 @@ const readmeExamplesTreeFlatArr = Object.keys(readmeMap).map(filename => {
   const { title, filepath } = readmeMap[filename] 
   return {
     title,
-    link: `https://mcc1999.github.io/src/pages/${filename}.html`,
+    link: `https://mcc1999.github.io/learning-threejs/src/pages/${filename}.html`,
     parent: filename.split('_')[0],
   }
 })
@@ -139,7 +139,7 @@ function generateReadMeExamplesTreeString(tree, treeLevel = 1) {
       str = str + '  '.repeat(treeLevel) + `- [${tree[i].title}](${tree[i].link})\n`
     }
     if(tree[i].child) {
-      str = str +  generateReadMeExamplesTreeString(tree[i].child, treeLevel+1) + `\n`
+      str = str +  generateReadMeExamplesTreeString(tree[i].child, treeLevel + 1) + `\n`
     }
   }
   return str
@@ -147,6 +147,6 @@ function generateReadMeExamplesTreeString(tree, treeLevel = 1) {
 const readmeExampleLinksString = generateReadMeExamplesTreeString(readmeExamplesTree)
 const readmeContent = `# Leaning Three.js by coding some examples which packaged with Vite.
 - Examples
-  ${readmeExampleLinksString}
+${readmeExampleLinksString}
 `
 fs.writeFileSync(readmePath, readmeContent)
