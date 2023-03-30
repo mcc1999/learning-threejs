@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
 
 /**
- * 目标：光源-电光源
+ * 目标：光源-点光源
 */
 
 // 1.创建场景scene和摄像头camera

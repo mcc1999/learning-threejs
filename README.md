@@ -32,6 +32,6 @@
     - [目标：灯光与阴影](https://mcc1999.github.io/learning-threejs/src/pages/03-light_01-main.html)
     - [目标：平行光阴影属性](https://mcc1999.github.io/learning-threejs/src/pages/03-light_02-main.html)
     - [目标：光源-聚光灯](https://mcc1999.github.io/learning-threejs/src/pages/03-light_03-main.html)
-    - [目标：光源-电光源](https://mcc1999.github.io/learning-threejs/src/pages/03-light_04-main.html)
+    - [目标：光源-点光源](https://mcc1999.github.io/learning-threejs/src/pages/03-light_04-main.html)
 
 

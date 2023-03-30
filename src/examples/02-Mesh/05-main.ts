@@ -13,7 +13,7 @@ camera.position.set(8, 4, 8)
 
 // 2.创建几何体
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
-const texture = new THREE.TextureLoader().load('./public/images/door.jpeg');
+const texture = new THREE.TextureLoader().load('/public/images/door.jpeg');
 // 纹理位移offset
 texture.offset.set(0.5, 0)
 // 纹理旋转
