@@ -110,6 +110,7 @@ const readmeExamplesTreeFlatArr = Object.keys(readmeMap).map(filename => {
   const { title, filepath } = readmeMap[filename] 
   return {
     title,
+    filepath,
     link: `https://mcc1999.github.io/learning-threejs/src/pages/${filename}.html`,
     parent: filename.split('_')[0],
   }
@@ -119,8 +120,8 @@ function convertToTree(data, parent) {
   const tree = [];
   for (let i = 0; i < data.length; i++) {
     if (data[i].parent === parent) {
-      const { title, link } = data[i]
-      const node = { title, link };
+      const { title, link, filepath } = data[i]
+      const node = { title, link, filepath };
       const child = convertToTree(data, data[i].title);
       if (child.length > 0) {
         node.child = child;
@@ -138,7 +139,7 @@ function generateReadMeExamplesTreeString(tree, treeLevel = 1) {
     if(!tree[i].link){
       str = str + '  '.repeat(treeLevel) + `- ${tree[i].title}\n`
     }else {
-      str = str + '  '.repeat(treeLevel) + `- [${tree[i].title}](${tree[i].link})\n`
+      str = str + '  '.repeat(treeLevel) + `- [${tree[i].title}](${tree[i].link})[【code】](${tree[i].filepath})\n`
     }
     if(tree[i].child) {
       str = str +  generateReadMeExamplesTreeString(tree[i].child, treeLevel + 1) + `\n`
