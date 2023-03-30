@@ -1,6 +1,6 @@
 export default {
+  base: '/learning-threejs/docs/src/pages/',
   build: {
-    base: './',
     outDir: 'docs',
     rollupOptions: {
       input: {
