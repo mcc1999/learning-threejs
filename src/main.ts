@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
 
 /**
- * 目标：几何体材质/纹理基本属性：offset、rotation、repeat
+ * 目标：几何体材质/纹理：TextureLoader加载图片/文件
 */
 
 // 1.创建场景scene和摄像头camera
@@ -14,15 +14,6 @@ camera.position.set(8, 4, 8)
 // 2.创建几何体
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
 const texture = new THREE.TextureLoader().load('/public/images/door.jpeg');
-// 纹理位移offset
-texture.offset.set(0.5, 0)
-// 纹理旋转
-texture.rotation = Math.PI / 2
-texture.center.set(0.5, 0.5)
-// 纹理重复
-texture.wrapS = THREE.RepeatWrapping
-texture.wrapT = THREE.RepeatWrapping
-texture.repeat.set(2, 2)
 const material = new THREE.MeshBasicMaterial({ map: texture })
 const mesh = new THREE.Mesh(boxGeometry, material)
 scene.add(mesh)
