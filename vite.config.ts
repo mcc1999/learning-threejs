@@ -1,5 +1,5 @@
 export default {
-  base: '/src/pages/',
+  base: '/',
   build: {
     outDir: 'docs',
     rollupOptions: {
