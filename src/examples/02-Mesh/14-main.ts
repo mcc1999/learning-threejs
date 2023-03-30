@@ -38,12 +38,12 @@ loaderManager.onError = (url) => {
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1, 200, 200, 200)
 // 纹理
 const cubeTexture = new THREE.CubeTextureLoader(loaderManager).load([
-	'./public/images/textures/environmentMaps/2/px.jpg',
-	'./public/images/textures/environmentMaps/2/nx.jpg',
-	'./public/images/textures/environmentMaps/2/py.jpg',
-	'./public/images/textures/environmentMaps/2/ny.jpg',
-	'./public/images/textures/environmentMaps/2/pz.jpg',
-	'./public/images/textures/environmentMaps/2/nz.jpg',
+	`${BASE_URL}images/textures/environmentMaps/2/px.jpg`,
+	`${BASE_URL}images/textures/environmentMaps/2/nx.jpg`,
+	`${BASE_URL}images/textures/environmentMaps/2/py.jpg`,
+	`${BASE_URL}images/textures/environmentMaps/2/ny.jpg`,
+	`${BASE_URL}images/textures/environmentMaps/2/pz.jpg`,
+	`${BASE_URL}images/textures/environmentMaps/2/nz.jpg`,
 ])
 const material = new THREE.MeshStandardMaterial({
 	envMap: cubeTexture,

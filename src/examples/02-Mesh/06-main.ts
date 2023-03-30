@@ -13,7 +13,7 @@ camera.position.set(8, 4, 8)
 
 // 2.创建几何体
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
-const texture = new THREE.TextureLoader().load('./public/images/minecraft.jpeg');
+const texture = new THREE.TextureLoader().load(`${BASE_URL}images/minecraft.jpeg`);
 // 设置显示算法
 texture.minFilter = THREE.NearestFilter
 texture.magFilter = THREE.NearestFilter

@@ -14,10 +14,10 @@ camera.position.set(8, 4, 8)
 
 // 2.创建几何体
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1, 200, 200, 200) // 添加顶点细分
-const texture = new THREE.TextureLoader().load('./public/images/textures/door/door.jpg');
-const alphaTexture = new THREE.TextureLoader().load('./public/images/textures/door/alpha.jpg');
-const aoTexture = new THREE.TextureLoader().load('./public/images/textures/door/ambientOcclusion.jpg')
-const displacementTexture = new THREE.TextureLoader().load('./public/images/textures/door/height.jpg')
+const texture = new THREE.TextureLoader().load(`${BASE_URL}images/textures/door/door.jpg`);
+const alphaTexture = new THREE.TextureLoader().load(`${BASE_URL}images/textures/door/alpha.jpg`);
+const aoTexture = new THREE.TextureLoader().load(`${BASE_URL}images/textures/door/ambientOcclusion.jpg`)
+const displacementTexture = new THREE.TextureLoader().load(`${BASE_URL}images/textures/door/height.jpg`)
 
 const material = new THREE.MeshStandardMaterial({ 
 	map: texture,

@@ -32,13 +32,13 @@ loaderManager.onError = (url) => {
 
 // 2.创建几何体
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1, 200, 200, 200)
-const texture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/door.jpg');
-const alphaTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/alpha.jpg');
-const aoTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/ambientOcclusion.jpg')
-const displacementTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/height.jpg')
-const roughnessTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/roughness.jpg')
-const metalnessTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/metalness.jpg')
-const normalTexture = new THREE.TextureLoader(loaderManager).load('./public/images/textures/door/normal.jpg')
+const texture = new THREE.TextureLoader(loaderManager).load(`${BASE_URL}images/textures/door/door.jpg`);
+const alphaTexture = new THREE.TextureLoader(loaderManager).load(`${BASE_URL}images/textures/door/alpha.jpg`);
+const aoTexture = new THREE.TextureLoader(loaderManager).load(`${BASE_URL}images/textures/door/ambientOcclusion.jpg`)
+const displacementTexture = new THREE.TextureLoader(loaderManager).load(`${BASE_URL}images/textures/door/height.jpg`)
+const roughnessTexture = new THREE.TextureLoader(loaderManager).load(`${BASE_URL}images/textures/door/roughness.jpg`)
+const metalnessTexture = new THREE.TextureLoader(loaderManager).load(`${BASE_URL}images/textures/door/metalness.jpg`)
+const normalTexture = new THREE.TextureLoader(loaderManager).load(`${BASE_URL}images/textures/door/normal.jpg`)
 
 const material = new THREE.MeshStandardMaterial({ 
 	map: texture,

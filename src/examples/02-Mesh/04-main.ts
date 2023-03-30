@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
-const BASE_URL = import.meta.env.DEV ? '/' : '/learning-threejs'
+
 /**
  * 目标：几何体材质/纹理：TextureLoader加载图片/文件
 */
