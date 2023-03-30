@@ -149,7 +149,7 @@ function generateReadMeExamplesTreeString(tree, treeLevel = 1) {
 }
 const readmeExampleLinksString = generateReadMeExamplesTreeString(readmeExamplesTree)
 const readmeContent = `# Leaning Three.js by coding some examples which packaged with Vite.
-- Examples
+- Examples（Click to preview and view source code.）
 ${readmeExampleLinksString}
 `
 fs.writeFileSync(readmePath, readmeContent)
