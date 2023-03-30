@@ -139,7 +139,7 @@ function generateReadMeExamplesTreeString(tree, treeLevel = 1) {
     if(!tree[i].link){
       str = str + '  '.repeat(treeLevel) + `- ${tree[i].title}\n`
     }else {
-      str = str + '  '.repeat(treeLevel) + `- [${tree[i].title}](${tree[i].link})[->【code】](${tree[i].filepath})\n`
+      str = str + '  '.repeat(treeLevel) + `- [${tree[i].title}](${tree[i].link})<a href=${tree[i].filepath} style="color: purple">code</a>\n`
     }
     if(tree[i].child) {
       str = str +  generateReadMeExamplesTreeString(tree[i].child, treeLevel + 1) + `\n`
