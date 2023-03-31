@@ -1,51 +1,68 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { BASE_URL } from './consts'
+import * as TWEEN from '@tweenjs/tween.js'
 import './style.css'
-const BASE_URL = import.meta.env.DEV ? '/' : '/learning-threejs'
+import { GUI } from 'dat.gui'
 /**
- * 目标：几何体材质/纹理：TextureLoader加载图片/文件
+ * 目标：利用透视相机的filmGauge、filmOffset属性创建鱼眼镜头
 */
+const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 1100 );
+camera.position.set(0, 600, 0);
+camera.lookAt(new THREE.Vector3( 0, 600, 0 ))
 
-// 1.创建场景scene和摄像头camera
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-camera.position.set(8, 4, 8)
+const geometry = new THREE.SphereGeometry( 500, 60, 40 );
+geometry.scale( -1, 1, 1 );
+geometry.rotateY(-Math.PI / 2)
 
+const texture = new THREE.TextureLoader().load(`${BASE_URL}images/textures/camera/dongman.png`)
+const material = new THREE.MeshBasicMaterial({
+		map: texture
+});
 
-// 2.创建几何体
-const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
-const texture = new THREE.TextureLoader().load(`${BASE_URL}images/door.jpeg`);
-const material = new THREE.MeshBasicMaterial({ map: texture })
-const mesh = new THREE.Mesh(boxGeometry, material)
-scene.add(mesh)
+const mesh = new THREE.Mesh( geometry, material );
+scene.add( mesh );
 
-// 3. 创建网格辅助器
-const gridHelper = new THREE.GridHelper( 10, 10 );
-const axesHelper = new THREE.AxesHelper(5);
-scene.add( gridHelper );
-scene.add( axesHelper );
+const renderer = new THREE.WebGLRenderer({logarithmicDepthBuffer: true});
 
-// 4. 创建渲染器renderer并设置尺寸
-const renderer = new THREE.WebGLRenderer();
+renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.sortObjects = false;
+renderer.autoClear = false;
 document.body.appendChild( renderer.domElement );
 
-// 5. 创建轨道控制器
-const controls = new OrbitControls(camera, renderer.domElement)
-controls.enableDamping = true
+const controls = new OrbitControls(camera, renderer.domElement);          
+	
+function animate() {
+		render();
+		requestAnimationFrame( ()=>{animate()});
+}
+function render() {
+		//更新控制器
+		controls.update();
+		TWEEN.update()
+		renderer.render(scene, camera);
+}
+animate()
 
-window.addEventListener('resize', () => {
-	camera.aspect = window.innerWidth / window.innerHeight
-	camera.updateProjectionMatrix()
-
-	renderer.setSize(window.innerWidth, window.innerHeight)
-	renderer.setPixelRatio(window.devicePixelRatio)
+const tween = new TWEEN.Tween( { lat : 0, y : camera.position.y, fov : camera.fov } )
+.to( { lat: 90, y : 0, fov : 100 }, 2500 )
+.delay(1000)
+.easing(TWEEN.Easing.Cubic.InOut)
+.onUpdate(function({lat, y ,fov}) {	
+	let phi = Math.PI / 180 * lat;
+	camera.lookAt(0, -500 * Math.cos( phi ), -500 * Math.sin( phi ));
+	camera.position.y = y;
+	camera.fov = fov;
+	camera.updateProjectionMatrix();
 })
 
-function animate() {
-	// 设置了autoRotate / enableDamping = true， 需要在render函数中update()
-  controls.update() 
-	renderer.render( scene, camera );
-	requestAnimationFrame( animate );
+const gui = new GUI()
+const guiParams = {
+	start: () => { camera.lookAt(0, 600, 0); tween.start() },
+	position: camera.position
 }
-animate();
+gui
+gui.add(camera.position, 'y', 440, 1000, 10).name('cameraY').onChange(() => { camera.updateProjectionMatrix() })
+gui.add(guiParams, 'start').name('run')
