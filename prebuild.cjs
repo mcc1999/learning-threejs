@@ -139,7 +139,7 @@ function generateReadMeExamplesTreeString(tree, treeLevel = 1) {
     if(!tree[i].link){
       str = str + '  '.repeat(treeLevel) + `- ${tree[i].title}\n`
     }else {
-      str = str + '  '.repeat(treeLevel) + `- [${tree[i].title}](${tree[i].link}) / [【code】](${tree[i].filepath})</span>\n`
+      str = str + '  '.repeat(treeLevel) + `- [${tree[i].title}](${tree[i].link}) / [【code】](${tree[i].filepath})\n`
     }
     if(tree[i].child) {
       str = str +  generateReadMeExamplesTreeString(tree[i].child, treeLevel + 1) + `\n`
@@ -149,7 +149,7 @@ function generateReadMeExamplesTreeString(tree, treeLevel = 1) {
 }
 const readmeExampleLinksString = generateReadMeExamplesTreeString(readmeExamplesTree)
 const readmeContent = `# Leaning Three.js by coding some examples which packaged with Vite.
-- Examples
+- Examples（Click to preview demo and view source code.）
 ${readmeExampleLinksString}
 `
 fs.writeFileSync(readmePath, readmeContent)
