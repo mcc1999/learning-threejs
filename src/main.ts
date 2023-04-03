@@ -2,19 +2,18 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { BASE_URL } from './consts'
 import * as TWEEN from '@tweenjs/tween.js'
-import './style.css'
 import { GUI } from 'dat.gui'
+import './style.css'
+
 /**
- * 目标：利用透视相机的filmGauge、filmOffset属性创建鱼眼镜头
+ * 目标：全景小行星进场
 */
 const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 1100 );
-camera.position.set(0, 600, 0);
-camera.lookAt(new THREE.Vector3( 0, 600, 0 ))
+const camera = new THREE.PerspectiveCamera( 170, window.innerWidth / window.innerHeight, 1, 1100 );
+camera.position.set(0, 510, 0);
 
-const geometry = new THREE.SphereGeometry( 500, 60, 40 );
+const geometry = new THREE.SphereGeometry( 500, 500, 500 );
 geometry.scale( -1, 1, 1 );
-geometry.rotateY(-Math.PI / 2)
 
 const texture = new THREE.TextureLoader().load(`${BASE_URL}images/textures/camera/dongman.png`)
 const material = new THREE.MeshBasicMaterial({
@@ -24,13 +23,17 @@ const material = new THREE.MeshBasicMaterial({
 const mesh = new THREE.Mesh( geometry, material );
 scene.add( mesh );
 
-const renderer = new THREE.WebGLRenderer({logarithmicDepthBuffer: true});
-
-renderer.setPixelRatio( window.devicePixelRatio );
+const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
-renderer.sortObjects = false;
-renderer.autoClear = false;
 document.body.appendChild( renderer.domElement );
+
+window.addEventListener('resize', () => {
+	camera.aspect = window.innerWidth / window.innerHeight
+	camera.updateProjectionMatrix()
+
+	renderer.setSize(window.innerWidth, window.innerHeight)
+	renderer.setPixelRatio(window.devicePixelRatio)
+})
 
 const controls = new OrbitControls(camera, renderer.domElement);          
 	
@@ -46,23 +49,58 @@ function render() {
 }
 animate()
 
-const tween = new TWEEN.Tween( { lat : 0, y : camera.position.y, fov : camera.fov } )
-.to( { lat: 90, y : 0, fov : 100 }, 2500 )
-.delay(1000)
-.easing(TWEEN.Easing.Cubic.InOut)
-.onUpdate(function({lat, y ,fov}) {	
-	let phi = Math.PI / 180 * lat;
-	camera.lookAt(0, -500 * Math.cos( phi ), -500 * Math.sin( phi ));
-	camera.position.y = y;
-	camera.fov = fov;
-	camera.updateProjectionMatrix();
-})
+function enterScene() {
+	// 获取相机坐标
+	let cameraLook = new THREE.Vector3();
+	camera.getWorldDirection(cameraLook);
+
+	let tween = new TWEEN.Tween({ fov: camera.fov, z: 0, cy: camera.position.y})
+		.to({
+				fov: 70,
+				z: -1200,
+				cy: 0,
+		}, 2000)
+		.easing(TWEEN.Easing.Linear.None)
+		.onComplete(function() {
+				TWEEN.remove(tween);
+		})
+		.onUpdate(function(t) {
+			// 更新相机位置和视角大小
+			console.log(t.fov, t.z, t.cy);
+			
+			camera.position.y = t.cy;
+			camera.fov = t.fov;
+			camera.updateProjectionMatrix();
+			// 旋转效果
+			mesh.rotation.y += 0.01;
+			// 更新看向位置
+			const target = new THREE.Vector3(0, 0, t.z);
+			camera.lookAt(target);
+		})
+		.start();
+}
+const tween = new TWEEN.Tween( { fov : 170, ars: 40, rot: 0 } )
+	.to( { fov : 100, ars: 0, rot: Math.PI * 1.1  }, 2500 )
+	.delay(1000)
+	.easing(TWEEN.Easing.Cubic.InOut)
+	.onComplete(function() {
+		TWEEN.remove(tween);
+		setTimeout(function(){
+				// 旋转入场动画
+				enterScene()
+		}, 1000)
+	})
+	.onUpdate(function({ rot, fov}) {	
+		// 视角由大到小
+    camera.fov = fov;
+    camera.updateProjectionMatrix()
+    // 旋转
+    mesh.rotation.y = rot;
+	})
 
 const gui = new GUI()
 const guiParams = {
 	start: () => { camera.lookAt(0, 600, 0); tween.start() },
 	position: camera.position
 }
-gui
-gui.add(camera.position, 'y', 440, 1000, 10).name('cameraY').onChange(() => { camera.updateProjectionMatrix() })
 gui.add(guiParams, 'start').name('run')
