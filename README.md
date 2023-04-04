@@ -35,4 +35,6 @@
     - [目标：光源-点光源](https://mcc1999.github.io/learning-threejs/src/pages/03-light_04-main.html) / [【code】](src/examples/03-light/04-main.ts)
 
   - 04-demos
+    - [目标：全景小行星进场](https://mcc1999.github.io/learning-threejs/src/pages/04-demos_01-main.html) / [【code】](src/examples/04-demos/01-main.ts)
+
 
