@@ -11,8 +11,7 @@ import './style.css'
  *  - 透视相机的fov设置一个很大的值(接近180度)，使得能在俯视视角下能看到全景图的绝大部分
  *  - 相机初始视角设为球形几何体的(0, radius, 0)
  *  - 全景图贴图在球形几何体上，并设为BaskSide渲染
- *  - 设置动画：改变相机fov至较正常视角(90度) / 球形几何体旋转
- *  - 设置动画-转向目标建筑：改变相机fov至较正常视角(75度) ，更新相机位置至(0, 0, 0) / 相机朝向(0, 0, 0)
+ *  - 设置动画：改变相机fov至正常视角(90度) / 球形几何体旋转
 */
 const gui = new GUI()
 
@@ -60,26 +59,23 @@ function render() {
 animate()
 
 function enterScene() {
-	let tween = new TWEEN.Tween({ fov: camera.fov, z: 0, cy: camera.position.y, mx: 0, my: 0})
+	let tween = new TWEEN.Tween({ fov: camera.fov, z: 0, cy: camera.position.y})
 		.to({
 				fov: 70,
 				z: -500,
 				cy: 0,
-				mx: -Math.PI / 8,
-				my: Math.PI
-		},2000)
+		}, 2000)
 		.easing(TWEEN.Easing.Linear.None)
 		.onComplete(function() {
 				TWEEN.remove(tween);
 		})
-		.onUpdate(function(t) {						
+		.onUpdate(function(t) {
 			// 更新相机位置和视角大小			
 			camera.position.y = t.cy;
 			camera.fov = t.fov;
 			camera.updateProjectionMatrix();
 			// 旋转效果
 			mesh.rotation.y += 0.01;
-			mesh.rotation.x = t.mx;
 			// 更新看向位置
 			const target = new THREE.Vector3(0, 0, t.z);
 			camera.lookAt(target);
@@ -95,7 +91,7 @@ const tween = new TWEEN.Tween( { fov : 170, rotation: 0 } )
 		setTimeout(function(){
 				// 旋转入场动画
 				enterScene()
-		}, 500)
+		}, 1000)
 	})
 	.onUpdate(function({ fov, rotation, }) {	
 		// 视角由大到小
@@ -106,20 +102,7 @@ const tween = new TWEEN.Tween( { fov : 170, rotation: 0 } )
 	})
 
 const guiParams = {
-	start: () => { 
-		console.log(mesh.rotation);
-		
-		tween.start() 
-	},
-	reset: () => {
-		mesh.rotation.set(0, 0 ,0)
-		camera.position.set(0, 500, 0)
-		camera.lookAt(0, 500, 0)
-		camera.fov = 170
-		camera.updateProjectionMatrix()
-
-	},
+	start: () => { camera.lookAt(0, 500, 0); tween.start() },
 	position: camera.position
 }
 gui.add(guiParams, 'start').name('run')
-gui.add(guiParams, 'reset').name('reset')

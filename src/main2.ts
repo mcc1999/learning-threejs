@@ -7,23 +7,21 @@ import './style.css'
 
 /**
  * 目标：全景小行星进场
- * 原理：
- *  - 透视相机的fov设置一个很大的值(接近180度)，使得能在俯视视角下能看到全景图的绝大部分
- *  - 相机初始视角设为球形几何体的(0, radius, 0)
- *  - 全景图贴图在球形几何体上，并设为BaskSide渲染
- *  - 设置动画：改变相机fov至较正常视角(90度) / 球形几何体旋转
- *  - 设置动画-转向目标建筑：改变相机fov至较正常视角(75度) ，更新相机位置至(0, 0, 0) / 相机朝向(0, 0, 0)
 */
 const gui = new GUI()
 
 // 1.创建场景和相机
 const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera( 170, window.innerWidth / window.innerHeight, 1, 10000 );
-camera.position.set(0, 500, 0);
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+camera.position.set(0, 1200, 0);
+
+// 2.创建坐标系
+const axesHelper = new THREE.AxesHelper( 5000 );
+scene.add( axesHelper );
 
 // 2.创建球形几何体，并加载全景纹理
 const geometry = new THREE.SphereGeometry( 500, 500, 500 );
-// 使得材质渲染从FrontSide变成BackSide
+// 使得材质FrontSide变成BackSide
 geometry.scale(-1, 1, 1) 
 const texture = new THREE.TextureLoader().load(`${BASE_URL}images/textures/camera/dongman.png`)
 const material = new THREE.MeshBasicMaterial({
@@ -60,34 +58,37 @@ function render() {
 animate()
 
 function enterScene() {
-	let tween = new TWEEN.Tween({ fov: camera.fov, z: 0, cy: camera.position.y, mx: 0, my: 0})
+	// 获取相机坐标
+	let cameraLook = new THREE.Vector3();
+	camera.getWorldDirection(cameraLook);
+
+	let tween = new TWEEN.Tween({ fov: camera.fov, z: 0, cy: camera.position.y})
 		.to({
 				fov: 70,
-				z: -500,
+				z: -1200,
 				cy: 0,
-				mx: -Math.PI / 8,
-				my: Math.PI
-		},2000)
+		}, 2000)
 		.easing(TWEEN.Easing.Linear.None)
 		.onComplete(function() {
 				TWEEN.remove(tween);
 		})
-		.onUpdate(function(t) {						
-			// 更新相机位置和视角大小			
+		.onUpdate(function(t) {
+			// 更新相机位置和视角大小
+			console.log(t.fov, t.z, t.cy);
+			
 			camera.position.y = t.cy;
 			camera.fov = t.fov;
 			camera.updateProjectionMatrix();
 			// 旋转效果
 			mesh.rotation.y += 0.01;
-			mesh.rotation.x = t.mx;
 			// 更新看向位置
 			const target = new THREE.Vector3(0, 0, t.z);
 			camera.lookAt(target);
 		})
 		.start();
 }
-const tween = new TWEEN.Tween( { fov : 170, rotation: 0 } )
-	.to( { fov : 100, rotation: Math.PI * 1.1  }, 2500 )
+const tween = new TWEEN.Tween( { fov : 170, ars: 40, rot: 0 } )
+	.to( { fov : 100, ars: 0, rot: Math.PI * 1.1  }, 2500 )
 	.delay(1000)
 	.easing(TWEEN.Easing.Cubic.InOut)
 	.onComplete(function() {
@@ -95,31 +96,18 @@ const tween = new TWEEN.Tween( { fov : 170, rotation: 0 } )
 		setTimeout(function(){
 				// 旋转入场动画
 				enterScene()
-		}, 500)
+		}, 1000)
 	})
-	.onUpdate(function({ fov, rotation, }) {	
+	.onUpdate(function({ rot, fov}) {	
 		// 视角由大到小
     camera.fov = fov;
     camera.updateProjectionMatrix()
     // 旋转
-    mesh.rotation.y = rotation;
+    mesh.rotation.y = rot;
 	})
 
 const guiParams = {
-	start: () => { 
-		console.log(mesh.rotation);
-		
-		tween.start() 
-	},
-	reset: () => {
-		mesh.rotation.set(0, 0 ,0)
-		camera.position.set(0, 500, 0)
-		camera.lookAt(0, 500, 0)
-		camera.fov = 170
-		camera.updateProjectionMatrix()
-
-	},
+	start: () => { camera.lookAt(0, 600, 0); tween.start() },
 	position: camera.position
 }
 gui.add(guiParams, 'start').name('run')
-gui.add(guiParams, 'reset').name('reset')
