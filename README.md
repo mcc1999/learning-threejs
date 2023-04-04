@@ -34,4 +34,5 @@
     - [目标：光源-聚光灯](https://mcc1999.github.io/learning-threejs/src/pages/03-light_03-main.html) / [【code】](src/examples/03-light/03-main.ts)
     - [目标：光源-点光源](https://mcc1999.github.io/learning-threejs/src/pages/03-light_04-main.html) / [【code】](src/examples/03-light/04-main.ts)
 
+  - 04-demos
 
