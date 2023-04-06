@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { BASE_URL } from './consts'
+import { BASE_URL } from '../../consts'
 import * as TWEEN from '@tweenjs/tween.js'
 import { GUI } from 'dat.gui'
 import './style.css'
