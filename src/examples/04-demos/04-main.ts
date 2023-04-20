@@ -2,11 +2,8 @@ import { GUI } from 'dat.gui';
 import * as THREE from 'three';
 import { DragControls } from 'three/examples/jsm/controls/DragControls';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
-import { BASE_URL } from './consts'
+import { createTextGeometry } from '../../utils';
 import './style.css'
-import { createTextGeometry } from './utils';
 
 /**
  * 目标：拖拽控制器

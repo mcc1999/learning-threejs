@@ -7,10 +7,42 @@
 - 相机分类
   - 透视相机(PerspectiveCamera)
   - 正交相机(OrthographicCamera)
-  - 立体相机(StereoCamera)
+  - 立体相机-双透视相机(StereoCamera)
   - 立方相机(CubeCamera)
   - 摄像机阵列(ArrayCamera)
 
 - 透视相机
   - fov、aspect、far、near
-  - filmGauge、filmOffset
+  
+- 正交相机
+  - 物体大小不会近大远小
+  - top、right、bottom、left、near、far
+  - **保持横纵比例正常，需保持相机的横纵比例和renderer.size比例相同**
+
+- 立体相机
+  - 也叫双透视相机，主要用于双屏渲染，VR头显下呈现3D效果
+  - 使用stereoEffect进行render
+  ```javascript
+    import { StereoEffect } from 'three/examples/jsm/effects/StereoEffect';
+
+    const renderer = new THREE.WebGLRenderer()
+    const stereoEffect = new StereoEffect(renderer)
+    
+    // ...
+
+    window.addEventListener('resize', () => {
+      // ...
+
+      stereoEffect.setSize( window.innerWidth, window.innerHeight );
+    })
+
+    function render() {
+      // ...
+      stereoEffect.render(scene, camera)
+    }
+   ```
+
+- 立体相机
+  - 6个相机render到一个WebGLCubeRenderTarget上
+
+- 摄像机阵列
