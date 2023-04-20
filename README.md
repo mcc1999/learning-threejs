@@ -36,5 +36,8 @@
 
   - 04-demos
     - [目标：全景小行星进场](https://mcc1999.github.io/learning-threejs/src/pages/04-demos_01-main.html) / [【code】](src/examples/04-demos/01-main.ts)
+    - [目标：透视相机和正交相机](https://mcc1999.github.io/learning-threejs/src/pages/04-demos_02-main.html) / [【code】](src/examples/04-demos/02-main.ts)
+    - [目标：立体相机StereoCamera--stereoEffect](https://mcc1999.github.io/learning-threejs/src/pages/04-demos_03-main.html) / [【code】](src/examples/04-demos/03-main.ts)
+    - [目标：拖拽控制器](https://mcc1999.github.io/learning-threejs/src/pages/04-demos_04-main.html) / [【code】](src/examples/04-demos/04-main.ts)
 
 

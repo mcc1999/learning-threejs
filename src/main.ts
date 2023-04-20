@@ -1,115 +1,107 @@
-import { GUI } from 'dat.gui';
-import * as THREE from 'three';
-import { DragControls } from 'three/examples/jsm/controls/DragControls';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { BASE_URL } from './consts'
+import type { Mesh, WebGLRenderer, Scene, PerspectiveCamera, OrthographicCamera, AxesHelper, DirectionalLight } from 'three'
 import './style.css'
-import { createTextGeometry } from './utils';
+import { GUI } from 'dat.gui'
 
 /**
- * 目标：拖拽控制器
- * - 当拖拽group时，需要把transformGroup属性设为true，才能使得group内物体一起拖拽
- */
+ * 目标：透视相机和正交相机
+*/
+enum CameraType {
+	'PerspectiveCamera' = 'PerspectiveCamera',
+	'OrthographicCamera' = 'OrthographicCamera'
+}
 const gui = new GUI()
+class CameraEXample {
+	scene: Scene;
+	camera?: PerspectiveCamera | OrthographicCamera;
+	mesh?: Mesh;
+	renderer?: WebGLRenderer;
+	controls?: OrbitControls;
+	axesHelper?: AxesHelper;
+	light?: DirectionalLight;
 
-// 1.创建场景scene和摄像头camera
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
-camera.position.set(3, 2, 5);
-camera.lookAt(new THREE.Vector3())
-
-// 3.创建物体
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh( geometry, material );
-const cube2 = new THREE.Mesh( geometry, material );
-scene.add( cube2 );
-cube2.position.set(3, 0, 0)
-const guiParams = {
-	x: cube2.position.x,
-	y: cube2.position.y,
-	z: cube2.position.z,
-}
-gui.add(guiParams, 'x', 0, 10, 0.1).name("x").onChange((v) => {cube2.position.x = v})
-gui.add(guiParams, 'y', 0, 10, 0.1).name("y").onChange((v) => {cube2.position.y = v})
-gui.add(guiParams, 'z', 0, 10, 0.1).name("z").onChange((v) => {cube2.position.z = v})
-
-const group = new THREE.Group()
-group.add(cube)
-cube.position.set(0, 0, 0)
-scene.add(group)
-
-const dragText = await createTextGeometry({
-	text: 'Drag',
-	textGeometryParameter: {
-		size: 0.25,
-		height: 0.1,
-	},
-	textMaterialParameter: {
-		color: 0xffffff
+	constructor(cameraType: CameraType) {
+		this.scene = new THREE.Scene()
+		this.initCamera(cameraType)
+		this.initHelper()
+		this.createRender()
+		this.createMesh()
+		this.createControl()
+		this.animate()
 	}
-})
-dragText.position.set(0, 0, 0.5)
-group.add(dragText)
 
-const guiText = await createTextGeometry({
-	text: 'USE GUI',
-	textGeometryParameter: {
-		size: 0.15,
-		height: 0.1,
-	},
-	textMaterialParameter: {
-		color: 0xffffff
+	initCamera(cameraType: CameraType) {
+		if (cameraType === CameraType.PerspectiveCamera){
+			this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+		} else if (cameraType === CameraType.OrthographicCamera) {
+			this.camera = new THREE.OrthographicCamera( - window.innerWidth / 2,  window.innerWidth / 2,  window.innerHeight / 2, - window.innerHeight / 2, 1, 10000 );
+		}
+		this.camera?.position.set(0, 0, 100)
+		this.camera?.lookAt(new THREE.Vector3());
+		this.camera?.updateProjectionMatrix()
+		const guiParams = {
+			'z': this.camera?.position.z
+		}
+		gui.add(guiParams, 'z', 100, 500, 50).name(`${cameraType}-Z`).onChange((z) => this.camera!.position.z = z)
 	}
-})
-guiText.position.set(0, 0, 0.5)
-cube2.add(guiText)
 
-// LIGHTS
-const dirLight = new THREE.DirectionalLight( 0xffffff );
-dirLight.position.set( 0, 0, 100 ).normalize();
-scene.add( dirLight );
+	initHelper() {
+		this.axesHelper = new THREE.AxesHelper(100)
+		this.scene.add(this.axesHelper)
+	}
 
-const light = new THREE.AmbientLight( 0xffffff, 0.5 );
-light.position.set( 0, 0, 100 ).normalize();
-scene.add( light );
+	createMesh() {
+		const geometry = new THREE.SphereGeometry( 50, 50, 50 );
+		const texture = new THREE.TextureLoader().load(`${BASE_URL}images/textures/camera/shanghaiTower.png`)
+		const material = new THREE.MeshBasicMaterial({
+			map: texture
+		});
+		this.mesh = new THREE.Mesh( geometry, material );	
+		this.mesh.position.set(0, 0, 0)
+		this.scene.add( this.mesh );
+	}
 
-// 5. 创建坐标轴辅助器
-const axesHelper = new THREE.AxesHelper(5);
-scene.add( axesHelper );
+	createRender() {
+		this.renderer = new THREE.WebGLRenderer();
 
-// 2. 创建渲染器renderer并设置尺寸
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-renderer.setPixelRatio(window.devicePixelRatio)
-document.body.appendChild( renderer.domElement );
+		this.renderer.setSize( window.innerWidth / 2, window.innerHeight / 2 );
+		document.body.appendChild( this.renderer.domElement );
+		
+		window.addEventListener('resize', () => {
+			// @ts-ignore
+			if(this.camera && this.camera.isPerspectiveCamera){
+				// @ts-ignore
+				this.camera.aspect = window.innerWidth / window.innerHeight
+				this.camera.updateProjectionMatrix()
+			}
+		
+			this.renderer?.setSize(window.innerWidth / 2, window.innerHeight / 2)
+			this.renderer?.setPixelRatio(window.devicePixelRatio)
+		})
+	}
 
-// 4. 创建拖拽控制器
-const controls = new DragControls([group], camera, renderer.domElement)
-controls.transformGroup = true
-controls.addEventListener('drag', render)
+	createControl() {
+		if(this.camera && this.renderer)
+			this.controls = new OrbitControls(this.camera, this.renderer.domElement);          
+	}
+	
+	animate() {
+		this.render();
+		requestAnimationFrame(() => this.animate());
+	}
 
-// const orbitControls = new OrbitControls(camera, renderer.domElement)
-// orbitControls.enableDamping = true
-
-function render() {
-	renderer.render( scene, camera );
+	render() {
+		//更新控制器
+		this.controls?.update();		
+		this.renderer?.render(this.scene!, this.camera!);
+	}
 }
 
-window.addEventListener('resize', () => {
-	camera.aspect = window.innerWidth / window.innerHeight
-	camera.updateProjectionMatrix()
+new CameraEXample(CameraType.PerspectiveCamera)
+new CameraEXample(CameraType.OrthographicCamera)
 
-	renderer.setSize(window.innerWidth, window.innerHeight)
-	renderer.setPixelRatio(window.devicePixelRatio)
 
-	render()
-})
 
-function animate() {
-	render()
-	requestAnimationFrame(animate)
-}
-animate()
+	

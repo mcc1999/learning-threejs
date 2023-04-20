@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import { BASE_URL } from '../../consts'
-import { GUI } from 'dat.gui'
 import { StereoEffect } from 'three/examples/jsm/effects/StereoEffect';
 import type { Mesh } from 'three';
 import './style.css'
@@ -9,7 +8,6 @@ import './style.css'
  * 目标：立体相机StereoCamera--stereoEffect
 */
 
-const gui = new GUI()
 const spheres: Mesh[] = []
 let windowHalfX = window.innerWidth / 2;
 let windowHalfY = window.innerHeight / 2;

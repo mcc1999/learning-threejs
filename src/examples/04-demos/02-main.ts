@@ -41,7 +41,10 @@ class CameraEXample {
 		this.camera?.position.set(0, 0, 100)
 		this.camera?.lookAt(new THREE.Vector3());
 		this.camera?.updateProjectionMatrix()
-		gui.add(this.camera?.position, 'z', 100, 500, 50).name(`${cameraType}-Z`)
+		const guiParams = {
+			'z': this.camera?.position.z
+		}
+		gui.add(guiParams, 'z', 100, 500, 50).name(`${cameraType}-Z`).onChange((z) => this.camera!.position.z = z)
 	}
 
 	initHelper() {
@@ -96,8 +99,8 @@ class CameraEXample {
 	}
 }
 
-const perspectiveCameraExample = new CameraEXample(CameraType.PerspectiveCamera)
-const orthographicCameraExample = new CameraEXample(CameraType.OrthographicCamera)
+new CameraEXample(CameraType.PerspectiveCamera)
+new CameraEXample(CameraType.OrthographicCamera)
 
 
 

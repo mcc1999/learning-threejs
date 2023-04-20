@@ -1,7 +1,6 @@
 import { GUI } from 'dat.gui';
 import * as THREE from 'three';
 import { DragControls } from 'three/examples/jsm/controls/DragControls';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { createTextGeometry } from '../../utils';
 import './style.css'
 
@@ -38,7 +37,7 @@ group.add(cube)
 cube.position.set(0, 0, 0)
 scene.add(group)
 
-const dragText = await createTextGeometry({
+createTextGeometry({
 	text: 'Drag',
 	textGeometryParameter: {
 		size: 0.25,
@@ -47,11 +46,12 @@ const dragText = await createTextGeometry({
 	textMaterialParameter: {
 		color: 0xffffff
 	}
+}).then(dragText => {
+	dragText.position.set(0, 0, 0.5)
+	group.add(dragText)
 })
-dragText.position.set(0, 0, 0.5)
-group.add(dragText)
 
-const guiText = await createTextGeometry({
+createTextGeometry({
 	text: 'USE GUI',
 	textGeometryParameter: {
 		size: 0.15,
@@ -60,9 +60,10 @@ const guiText = await createTextGeometry({
 	textMaterialParameter: {
 		color: 0xffffff
 	}
+}).then(guiText => {
+	guiText.position.set(0, 0, 0.5)
+	cube2.add(guiText)
 })
-guiText.position.set(0, 0, 0.5)
-cube2.add(guiText)
 
 // LIGHTS
 const dirLight = new THREE.DirectionalLight( 0xffffff );

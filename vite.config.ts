@@ -36,6 +36,9 @@ export default defineConfig({
            '03-light_03-main': '/src/pages/03-light_03-main.html',
            '03-light_04-main': '/src/pages/03-light_04-main.html',
            '04-demos_01-main': '/src/pages/04-demos_01-main.html',
+           '04-demos_02-main': '/src/pages/04-demos_02-main.html',
+           '04-demos_03-main': '/src/pages/04-demos_03-main.html',
+           '04-demos_04-main': '/src/pages/04-demos_04-main.html',
  
       },
     },
