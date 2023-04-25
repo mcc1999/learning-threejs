@@ -1,107 +1,150 @@
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { BASE_URL } from './consts'
-import type { Mesh, WebGLRenderer, Scene, PerspectiveCamera, OrthographicCamera, AxesHelper, DirectionalLight } from 'three'
+import * as THREE from 'three';
+import { BASE_URL } from './consts';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import './style.css'
 import { GUI } from 'dat.gui'
 
 /**
- * 目标：透视相机和正交相机
-*/
-enum CameraType {
-	'PerspectiveCamera' = 'PerspectiveCamera',
-	'OrthographicCamera' = 'OrthographicCamera'
+ * 目标：音频AudioLoader
+ */
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 10);
+const backgroundLoader = new THREE.TextureLoader();
+backgroundLoader.load(`${BASE_URL}images/sunnyDay.jpeg`, texture => {
+  scene.background = texture
+})
+
+const startGeometry = new THREE.CylinderGeometry(1, 1, 0.5, 3)
+const material = new THREE.MeshBasicMaterial({ color: 0xff9900 });
+const pauseGeometry = new THREE.CylinderGeometry(1, 1, 0.5, 4)
+const loadingGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.5, 4)
+const ringGeometry = new THREE.TorusGeometry(2.5, 0.5, 50);
+const ringMesh = new THREE.Mesh(ringGeometry, material);
+const pauseMesh = new THREE.Mesh(pauseGeometry, material);
+const startMesh  = new THREE.Mesh(startGeometry, material);
+const loadingMesh = new THREE.Mesh(loadingGeometry, material);
+startMesh.lookAt(0, 1, 0)
+startMesh.rotateY(Math.PI / 2)
+pauseMesh.lookAt(0, 1, 0)
+pauseMesh.rotateY(Math.PI / 4)
+loadingMesh.rotateY(Math.PI / 4)
+loadingMesh.position.x = -1
+const btnGroup = new THREE.Group();
+btnGroup.add(loadingMesh);
+btnGroup.add(ringMesh);
+scene.add(btnGroup)
+
+const tips = await createTextGeometry({
+	text: 'Click to Play/Pause Music',
+	textGeometryParameter: {
+		size: 1.5,
+		height: 0.5,
+	},
+	textMaterialParameter: {
+		color: 0xff9900
+	}
+})
+const songName = await createTextGeometry({
+	text: '《晴天》',
+  isChinese: true,
+	textGeometryParameter: {
+		size: 1.5,
+		height: 0.5,
+	},
+	textMaterialParameter: {
+		color: 0xff9900
+	}
+})
+tips.position.y = -5
+songName.position.y = 5
+scene.add(tips)
+scene.add(songName)
+
+// 添加环境光
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+const loader = new THREE.AudioLoader();
+let audioLoaded = false;
+const audioListener = new THREE.AudioListener();
+camera.add(audioListener);
+const audioSound = new THREE.Audio( audioListener );
+loader.load(`${BASE_URL}medias/audio/sunnyDay.mp3`, (buffer) => {
+  audioSound.setBuffer(buffer);
+  audioSound.setLoop(true);
+  audioSound.setVolume(0.5);
+  audioLoaded = true;
+  btnGroup.remove(loadingMesh);
+  btnGroup.add(startMesh);
+})
+
+const raycaster = new THREE.Raycaster();
+function onMouseClick( event: MouseEvent ) {
+  // 计算鼠标点击位置
+  var mouse = new THREE.Vector2();
+  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+  // 射线投射到场景中的所有对象
+  raycaster.setFromCamera( mouse, camera );
+  const intersects = raycaster.intersectObjects( btnGroup.children, true );  
+  
+  // 检查是否有对象与射线相交
+  if ( intersects.length > 0 && audioLoaded && btnGroup.children.includes(intersects[0].object)) {    
+    // 处理点击事件, intersects[0].object 是被点击的 Mesh 对象
+    if(audioSound.isPlaying){
+      console.log('pause');      
+      audioSound.pause();
+      btnGroup.add(startMesh);
+      btnGroup.remove(pauseMesh);
+    } else{
+        console.log('play');
+        audioSound.play();
+        btnGroup.remove(startMesh);
+        btnGroup.add(pauseMesh);      
+    }
+  }
 }
-const gui = new GUI()
-class CameraEXample {
-	scene: Scene;
-	camera?: PerspectiveCamera | OrthographicCamera;
-	mesh?: Mesh;
-	renderer?: WebGLRenderer;
-	controls?: OrbitControls;
-	axesHelper?: AxesHelper;
-	light?: DirectionalLight;
+window.addEventListener( 'click', onMouseClick, false );
 
-	constructor(cameraType: CameraType) {
-		this.scene = new THREE.Scene()
-		this.initCamera(cameraType)
-		this.initHelper()
-		this.createRender()
-		this.createMesh()
-		this.createControl()
-		this.animate()
-	}
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+})
 
-	initCamera(cameraType: CameraType) {
-		if (cameraType === CameraType.PerspectiveCamera){
-			this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
-		} else if (cameraType === CameraType.OrthographicCamera) {
-			this.camera = new THREE.OrthographicCamera( - window.innerWidth / 2,  window.innerWidth / 2,  window.innerHeight / 2, - window.innerHeight / 2, 1, 10000 );
-		}
-		this.camera?.position.set(0, 0, 100)
-		this.camera?.lookAt(new THREE.Vector3());
-		this.camera?.updateProjectionMatrix()
-		const guiParams = {
-			'z': this.camera?.position.z
-		}
-		gui.add(guiParams, 'z', 100, 500, 50).name(`${cameraType}-Z`).onChange((z) => this.camera!.position.z = z)
-	}
+// 创建OrbitControls对象
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
 
-	initHelper() {
-		this.axesHelper = new THREE.AxesHelper(100)
-		this.scene.add(this.axesHelper)
-	}
+const clock = new THREE.Clock();
+let time = 0;
+function animate() {
+  // loadingMesh position
+  if(!audioLoaded){
+    const deltaTime = clock.getDelta();
+    // 更新时间总量
+    time += deltaTime;
 
-	createMesh() {
-		const geometry = new THREE.SphereGeometry( 50, 50, 50 );
-		const texture = new THREE.TextureLoader().load(`${BASE_URL}images/textures/camera/shanghaiTower.png`)
-		const material = new THREE.MeshBasicMaterial({
-			map: texture
-		});
-		this.mesh = new THREE.Mesh( geometry, material );	
-		this.mesh.position.set(0, 0, 0)
-		this.scene.add( this.mesh );
-	}
+    // 每0.5秒更新一次位置
+    if (time > 0.15) {      
+      // 计算新的position.x值
+      loadingMesh.position.x = loadingMesh.position.x >= 1 ? -1 : loadingMesh.position.x + 1 ;
+      // 重置时间总量
+      time = 0;
+    }
+  }
 
-	createRender() {
-		this.renderer = new THREE.WebGLRenderer();
+  // tips rotation
+  tips.rotateY(0.01) 
+  requestAnimationFrame(animate);
+  controls.update()
+  renderer.render(scene, camera);
+}  
 
-		this.renderer.setSize( window.innerWidth / 2, window.innerHeight / 2 );
-		document.body.appendChild( this.renderer.domElement );
-		
-		window.addEventListener('resize', () => {
-			// @ts-ignore
-			if(this.camera && this.camera.isPerspectiveCamera){
-				// @ts-ignore
-				this.camera.aspect = window.innerWidth / window.innerHeight
-				this.camera.updateProjectionMatrix()
-			}
-		
-			this.renderer?.setSize(window.innerWidth / 2, window.innerHeight / 2)
-			this.renderer?.setPixelRatio(window.devicePixelRatio)
-		})
-	}
-
-	createControl() {
-		if(this.camera && this.renderer)
-			this.controls = new OrbitControls(this.camera, this.renderer.domElement);          
-	}
-	
-	animate() {
-		this.render();
-		requestAnimationFrame(() => this.animate());
-	}
-
-	render() {
-		//更新控制器
-		this.controls?.update();		
-		this.renderer?.render(this.scene!, this.camera!);
-	}
-}
-
-new CameraEXample(CameraType.PerspectiveCamera)
-new CameraEXample(CameraType.OrthographicCamera)
-
-
-
-	
+animate()
