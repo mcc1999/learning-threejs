@@ -2,6 +2,13 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import './style.css'
 
+/**
+ * 目标：keyboard控制
+ * - keypress事件只触发字符键，不触发功能键，且大小写敏感
+ * - keydown按下不松会一直触发
+ * - keyup无法阻止默认行为, 在press时已完成文字输入但屏幕未显示
+ */
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(5, 5, 5);
@@ -11,10 +18,6 @@ const cube = new THREE.Mesh(
   new THREE.MeshBasicMaterial({wireframe: true})
 );
 scene.add(cube);
-console.log(cube);
-
-console.log('cube.name', cube.name, scene.getObjectByName('cube'));
-console.log('cube.name', scene.getObjectByName('cube'));
 
 // 创建坐标轴辅助器
 const axesHelper = new THREE.AxesHelper(5);
