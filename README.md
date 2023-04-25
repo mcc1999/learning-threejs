@@ -10,6 +10,9 @@
     - [目标：gsap设置动画效果](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_07-main.html) / [【code】](src/examples/01-basic/07-main.ts)
     - [目标：轨道控制器阻尼效果 && 画面随网页大小自适应](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_08-main.html) / [【code】](src/examples/01-basic/08-main.ts)
     - [目标：应用dat.gui](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_09-main.html) / [【code】](src/examples/01-basic/09-main.ts)
+    - [目标：CSS2DRenderer,将三维物体和基于HTML的标签相结合](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_10-main.html) / [【code】](src/examples/01-basic/10-main.ts)
+    - [目标：webGL兼容性合性能监视器](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_11-main.html) / [【code】](src/examples/01-basic/11-main.ts)
+    - [目标：keyboard控制](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_12-main.html) / [【code】](src/examples/01-basic/12-main.ts)
 
   - 02-Mesh
     - [目标：使用BufferGeometry创建基础几何体](https://mcc1999.github.io/learning-threejs/src/pages/02-Mesh_01-main.html) / [【code】](src/examples/02-Mesh/01-main.ts)
@@ -27,6 +30,7 @@
     - [目标：纹理加载进度](https://mcc1999.github.io/learning-threejs/src/pages/02-Mesh_13-main.html) / [【code】](src/examples/02-Mesh/13-main.ts)
     - [目标：环境贴图](https://mcc1999.github.io/learning-threejs/src/pages/02-Mesh_14-main.html) / [【code】](src/examples/02-Mesh/14-main.ts)
     - [目标：场景背景](https://mcc1999.github.io/learning-threejs/src/pages/02-Mesh_15-main.html) / [【code】](src/examples/02-Mesh/15-main.ts)
+    - [目标：材质混合，Material的的blending屬性](https://mcc1999.github.io/learning-threejs/src/pages/02-Mesh_16-main.html) / [【code】](src/examples/02-Mesh/16-main.ts)
 
   - 03-light
     - [目标：灯光与阴影](https://mcc1999.github.io/learning-threejs/src/pages/03-light_01-main.html) / [【code】](src/examples/03-light/01-main.ts)
@@ -39,5 +43,7 @@
     - [目标：透视相机和正交相机](https://mcc1999.github.io/learning-threejs/src/pages/04-demos_02-main.html) / [【code】](src/examples/04-demos/02-main.ts)
     - [目标：立体相机StereoCamera--stereoEffect](https://mcc1999.github.io/learning-threejs/src/pages/04-demos_03-main.html) / [【code】](src/examples/04-demos/03-main.ts)
     - [目标：拖拽控制器](https://mcc1999.github.io/learning-threejs/src/pages/04-demos_04-main.html) / [【code】](src/examples/04-demos/04-main.ts)
+    - [目标：CSS3DRenderer,将层级的3D变换应用到DOM元素上](https://mcc1999.github.io/learning-threejs/src/pages/04-demos_05-main.html) / [【code】](src/examples/04-demos/05-main.ts)
+    - [目标：音频AudioLoader](https://mcc1999.github.io/learning-threejs/src/pages/04-demos_06-main.html) / [【code】](src/examples/04-demos/06-main.ts)
 
 

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { BASE_URL } from './consts';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { createTextGeometry } from './utils';
 import './style.css'
-import { GUI } from 'dat.gui'
 
 /**
  * 目标：音频AudioLoader
