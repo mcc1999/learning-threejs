@@ -36,7 +36,7 @@ btnGroup.add(loadingMesh);
 btnGroup.add(ringMesh);
 scene.add(btnGroup)
 
-const tips = await createTextGeometry({
+createTextGeometry({
 	text: 'Click to Play/Pause Music',
 	textGeometryParameter: {
 		size: 1.5,
@@ -45,8 +45,12 @@ const tips = await createTextGeometry({
 	textMaterialParameter: {
 		color: 0xff9900
 	}
+}).then(tips => {
+  tips.position.y = -5
+  scene.add(tips)
+  tips.name = 'tips'
 })
-const songName = await createTextGeometry({
+createTextGeometry({
 	text: '《晴天》',
   isChinese: true,
 	textGeometryParameter: {
@@ -56,11 +60,10 @@ const songName = await createTextGeometry({
 	textMaterialParameter: {
 		color: 0xff9900
 	}
+}).then(songName => {
+  songName.position.y = 5
+  scene.add(songName)
 })
-tips.position.y = -5
-songName.position.y = 5
-scene.add(tips)
-scene.add(songName)
 
 // 添加环境光
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -141,7 +144,7 @@ function animate() {
   }
 
   // tips rotation
-  tips.rotateY(0.01) 
+  scene.getObjectByName('tips')?.rotateY(0.01);
   requestAnimationFrame(animate);
   controls.update()
   renderer.render(scene, camera);
