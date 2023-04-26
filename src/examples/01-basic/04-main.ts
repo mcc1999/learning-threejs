@@ -8,6 +8,7 @@ import './style.css'
  * - Mesh.scale.set(x, y, z) 或 Mesh.scale.x = 1
  * - Mesh.scale.set(x, y, z) 或 Mesh.scale.x = 1
  * - Mesh.rotation.set(x, y, z) 或 Mesh.rotation.x = 1
+ * - 物体在移动/缩放/旋转过程中Mesh.geometry.attributes.position.array是不变的
 */
 
 // 1.创建场景scene和摄像头camera
