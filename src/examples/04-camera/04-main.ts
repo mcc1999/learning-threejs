@@ -1,23 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import './style.css'
 import { GUI } from 'dat.gui';
+import './style.css'
 
 /**
- * 目标：几何体应用矩阵变换
- * - 创建变换所需的matrix4矩阵
- *  - 自己创建matrix4矩阵
- *  ```typescript
- *     // for example 缩放变换矩阵
- *     const scaleMatrix4 = new THREE.Matrix4([
- *        x, 0, 0, 0,
- *        0, y, 0, 0, 
- *        0, 0, z, 0, 
- *        0, 0, 0, 1
- *     ]);
- *  ```
- *  - 使用makeRotationX()、makeRotationAxis(axis, angle)、makeScale(x, y ,z)生成变换matrix4
- * - 将matrix4应用到Mesh或Geometry上
+ * 目标：相机放大zoom in物体
+ * - 改变相机fov，但这会将物体的透视效果改变
+ * - 改变相机position
  */
 
 const scene = new THREE.Scene();
@@ -28,27 +17,7 @@ const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
-
-const doScale = (x: number, y: number, z: number) => {
-  const scaleMatrix4 = new THREE.Matrix4()
-  scaleMatrix4.set(
-    x, 0, 0, 0,
-    0, y, 0, 0,
-    0, 0, z, 0,
-    0, 0, 0, 1
-  )
-  const fnGenerateMatrix4 = new THREE.Matrix4()
-  fnGenerateMatrix4.makeScale(x, y, z)
-  geometry.applyMatrix4(scaleMatrix4)
-  // geometry.applyMatrix4(fnGenerateMatrix4)
-}
-const guiParams = {
-  doScale: () => {
-    doScale(2, 2, 2)
-  },
-}
-const gui = new GUI()
-gui.add(guiParams, 'doScale').name('放大两倍');
+camera.lookAt(mesh.position);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -74,8 +43,16 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 // controls.autoRotate = true;
 
+const guiParams = {
+  fov: camera.fov,
+}
+const gui = new GUI();
+gui.add(guiParams, 'fov', 0, 180, 5).onChange((v) => {
+  camera.fov = v
+  camera.updateProjectionMatrix()
+})
 
-function animate() { 
+function animate() {     
   requestAnimationFrame(animate);
   controls.update()
   renderer.render(scene, camera);

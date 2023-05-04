@@ -1,21 +1,54 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GUI } from 'dat.gui';
 import './style.css'
 
 /**
- * 目标：透视相机围绕物体旋转
- */ 
+ * 目标：几何体应用矩阵变换
+ * - 创建变换所需的matrix4矩阵
+ *  - 自己创建matrix4矩阵
+ *  ```typescript
+ *     // for example 缩放变换矩阵
+ *     const scaleMatrix4 = new THREE.Matrix4([
+ *        x, 0, 0, 0,
+ *        0, y, 0, 0, 
+ *        0, 0, z, 0, 
+ *        0, 0, 0, 1
+ *     ]);
+ *  ```
+ *  - 使用makeRotationX()、makeRotationAxis(axis, angle)、makeScale(x, y ,z)生成变换matrix4
+ * - 将matrix4应用到Mesh或Geometry上
+ */
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 5, 1000);
-const radius = 7
-camera.position.set(radius, 0, 0);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(5, 5, 5);
 
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
-camera.lookAt(mesh.position);
+
+const doScale = (x: number, y: number, z: number) => {
+  const scaleMatrix4 = new THREE.Matrix4()
+  scaleMatrix4.set(
+    x, 0, 0, 0,
+    0, y, 0, 0,
+    0, 0, z, 0,
+    0, 0, 0, 1
+  )
+  const fnGenerateMatrix4 = new THREE.Matrix4()
+  fnGenerateMatrix4.makeScale(x, y, z)
+  geometry.applyMatrix4(scaleMatrix4)
+  // geometry.applyMatrix4(fnGenerateMatrix4)
+}
+const guiParams = {
+  doScale: () => {
+    doScale(2, 2, 2)
+  },
+}
+const gui = new GUI()
+gui.add(guiParams, 'doScale').name('放大两倍');
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -41,17 +74,8 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 // controls.autoRotate = true;
 
-const clock = new THREE.Clock(true);
-const speed = Math.PI / 9;
-function animate() {     
-  /**
-   * - 根据部分圆弧长度，可以计算出该圆弧所对应的圆心角度数: `angle = (arcLength / radius) * (180 / Math.PI)`
-   * - 圆心角度数转换为弧度数: radians = angle * (Math.PI / 180)
-   * - 计算坐标：`x = radius * Math.cos(radians); y = radius * Math.sin(radians)`
-   */
-  camera.position.x = Math.cos(clock.getElapsedTime() * speed / radius) * radius;
-  camera.position.z = Math.sin(clock.getElapsedTime() * speed / radius) * radius;
-  camera.updateProjectionMatrix()
+
+function animate() { 
   requestAnimationFrame(animate);
   controls.update()
   renderer.render(scene, camera);
