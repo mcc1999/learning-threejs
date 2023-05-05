@@ -1,100 +1,59 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { GUI } from 'dat.gui';
+import { BASE_URL } from '../../consts';
 import './style.css'
 
 /**
- * 目标：根据数学公式创建几何体
+ * 目标：根据高度图（灰度位图）生成几何体Geometry（待优化）
+ * - 高度图实际上就是一个2维数组，地形实际上就是一系列高度不同的网格
+ * - 这样数组中每个元素的索引值刚好可以用来定位不用的网格（x,y），而所储存的值就是网格的高度（z）。
+ * - 因此对于高度（z），地形中最低点将用0表示，而最高点使用255表示
+ * - 使用2维数组的另一个好处就是我们高度图刚好可以用一张灰度位图（gray-scale bitmap）来表示
+ * - 对于位图中的每个像素来说，同样使用0~~255之间的值来表示一个灰度。
+ * - 这样，我们又能把不同的灰度映射为高度，并且用像素索引表示不同网格。
  */
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(5, 5, 5);
+camera.position.set(300, 300, 300);
 
-/**
- * - u 值映射到球体表面的纬度角度, 
- * - v 值映射到球体表面的经度角度
- * - 根据纬度和经度角度，使用球坐标系公式计算出对应点的三维坐标 (x, y, z)
- * - 该函数生成的球型几何体半径为1，可给x、y、z乘以一个半径参数r
-*/
-const radius = 5;
-const sphereFunction = function(u: number, v: number, target: THREE.Vector3) {
-  const phi = u * Math.PI;
-  const theta = v * 2 * Math.PI;
-  const x = Math.sin(phi) * Math.cos(theta) * radius;
-  const y = Math.cos(phi) * radius;
-  const z = Math.sin(phi) * Math.sin(theta) * radius;
-  target.set(x, y, z);
-}
+const	width = 100;
+const	height = 100;
+const	canvas = document.createElement('canvas');
+canvas.width = width;
+canvas.height = height;
+const	img = new	Image();
+img.src = `${BASE_URL}images/grandcanyon_small.png`
 
-const KleinBottleFn = function(u: number, v: number, target: THREE.Vector3) {
-    const	a	=	3;
-    const	n	=	3;
-    const	m	=	1;
-    const	uu	=	u	*	4	*	Math.PI;
-    const	vv	=	v	*	2	*	Math.PI;
-    const	x	=	(a	+	Math.cos(n	*	uu	/	2.0)	*	Math.sin(vv)	-	Math.sin(n	*	uu	/	2.0)	* Math.sin(2	*	vv))	*	Math.cos(m	*	uu	/	2.0);
-    const	y	=	(a	+	Math.cos(n	*	uu	/	2.0)	*	Math.sin(vv)	-	Math.sin(n	*	uu	/	2.0)	* Math.sin(2	*	vv))	*	Math.sin(m	*	uu	/	2.0);
-    const	z	=	Math.sin(n	*	uu	/	2.0)	*	Math.sin(vv)	+	Math.cos(n	*	uu	/	2.0)	* Math.sin(2	*	vv);
-    target.set(x,	y,	z);
-}
-
-const createGeometry = (type: 'sphere' | 'kleinBottle') => {
-  const fn = (parameterFn: (u: number, v: number, target: THREE.Vector3) => void) => {
-    const geometry = new THREE.BufferGeometry();
-    const vertices = [];
-    const indices = [];
-
-    const widthSegments = 32, heightSegments = 16;
-    for (let i = 0; i <= widthSegments; i++) {
-      const v = i / widthSegments;
-      for (let j = 0; j <= heightSegments; j++) {
-        const u = j / heightSegments;
-        const tempVector = new THREE.Vector3();
-        parameterFn(u, v, tempVector);
-        vertices.push(tempVector.x, tempVector.y, tempVector.z);
-        const index = (heightSegments + 1) * i + j;
-
-
-        if (i < widthSegments && j < heightSegments) {
-          const a = index;
-          const b = index + heightSegments + 1;
-          const c = index + heightSegments + 2;
-          const d = index + 1;
-
-          indices.push(a, b, c);
-          indices.push(c, d, a);
-        }
-      }
-    }
-
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-    geometry.setIndex(indices);
-
-    return geometry;
+img.onload = () => {
+  console.log('img loaded');
+  const data = new Uint8Array(width * height * 4)
+  canvas.width = width;
+  canvas.height = height;
+  
+  const context = canvas.getContext('2d');
+  context!.drawImage(img, 0, 0, width, height);
+  const imgData = context!.getImageData(0, 0, width, height);
+  console.log('imgData.data', imgData.data);
+  data.set(imgData.data);
+  let pixelSeq = 0;
+  
+  const material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+  
+  console.log(data.length);
+  const group = new THREE.Group();
+  
+  for (let j = 0, l = data.length; j < l; j += 4) {
+    const height = (data[pixelSeq * 4] / 255) * 255; // 最大高度限制为100
+    const geometry = new THREE.BoxGeometry(1, height, 1);
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(pixelSeq % width, height, Math.floor(pixelSeq / width));    
+    group.add(mesh);
+    pixelSeq++;
   }
-
-  switch (type) {
-    case 'sphere':
-      return fn(sphereFunction);
-    case 'kleinBottle':
-      return fn(KleinBottleFn);
-  }
-
+  scene.add(group)
 }
 
-
-const sphereMaterial = new	THREE.MeshPhongMaterial({
-  color:	0x049ef4,
-  side: THREE.DoubleSide,
-  flatShading: true,
-});
-const sphereGeometry = createGeometry('sphere');
-const kleinBottleGeometry = createGeometry('kleinBottle');
-
-const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-const kleinBottle = new THREE.Mesh(kleinBottleGeometry, sphereMaterial);
-scene.add(kleinBottle);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -118,27 +77,6 @@ scene.add(gridHelper);
 // 创建OrbitControls对象
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-
-const guiParams = {
-  kleinBottle: () => {
-    if(scene.children.map(c => c.id).includes(sphere.id)) {
-      console.log('remove sphere');  
-      scene.remove(sphere)
-      scene.add(kleinBottle);
-    }
-  },
-  sphere: () => {
-    if(scene.children.map(c => c.id).includes(kleinBottle.id)) { 
-      console.log('remove kleinBottle');  
-      scene.remove(kleinBottle)
-      scene.add(sphere);
-    }
-  }
-}
-
-const gui = new GUI()
-gui.add(guiParams, 'kleinBottle').name('kleinBottle')
-gui.add(guiParams, 'sphere').name('sphere')
 
 function animate() { 
   requestAnimationFrame(animate);

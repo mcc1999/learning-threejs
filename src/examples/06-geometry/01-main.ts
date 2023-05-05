@@ -1,58 +1,92 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { BASE_URL } from '../../consts';
+import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import gsap from 'gsap'
 import './style.css'
+import * as dat from 'dat.gui'
 
 /**
- * 目标：物体围绕一个点旋转
- */
+ * 目标：使用BufferGeometry创建基础几何体
+*/
 
+// 1.创建场景scene和摄像头camera
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 0, 20);
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+camera.position.set(8, 4, 8)
+
+// 2.使用BufferGeometry创建几何体
+const geometry = new THREE.BufferGeometry();
+const vertices = new Float32Array([
+	-1, -1,  1,
+	 1, -1,  1,
+	 1,  1,  1,
+	
+	 1,  1,  1,
+	-1,  1,  1,
+	-1, -1,  1,
+])
+geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
+const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+console.log('cube', cube);
 
 
-const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
-const moonMaterial = new THREE.MeshBasicMaterial();
-const moonGeometry = new THREE.SphereGeometry(1, 32, 32);
-const earthMaterial = new THREE.MeshBasicMaterial()
-const earthTexture = new THREE.TextureLoader().load(`${BASE_URL}images/earth.jpg`)
-const moonTexture = new THREE.TextureLoader().load(`${BASE_URL}images/moon.png`)
-const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-earthMaterial.map = earthTexture;
-moonMaterial.map = moonTexture
-scene.add(earth);
-moon.position.set(7, 0, 7);
-const pivotPoint = new THREE.Object3D();
-earth.add(pivotPoint);
-pivotPoint.add(moon);
-earth.rotateZ(Math.PI / 6)
+// 3. 创建网格辅助器
+const gridHelper = new THREE.GridHelper( 10, 10 );
+const axesHelper = new THREE.AxesHelper(5);
+scene.add( gridHelper );
+scene.add( axesHelper );
 
+// 4. 创建渲染器renderer并设置尺寸
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+// 5. 创建轨道控制器
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.enableDamping = true
+
+// 6. GUI初始化
+const gui = new dat.GUI()
+// @ts-ignore
+gui.add(cube.position, 'x', 0, 5, 0.1)
+	.name('X轴坐标')
+	.onChange((v) => {
+		console.log('change to', v);
+	})
+
+const params = {
+	color: '#00ff00',
+	fn: () => {
+		gsap.to(cube.position, {x: 5, duration: 2, repeat: -1, yoyo: true})
+	}
+}
+gui.addColor(params, 'color')
+	.name('Cube Color')
+	.onChange((v) => {
+		cube.material.color.set(v)
+	})
+
+// 运行函数
+gui.add(params, 'fn').name('运行')
+
+// 添加折叠文件夹
+const folder = gui.addFolder('Folder')
+// @ts-ignore
+folder.add(cube.material, 'wireframe').name('线框')
+
 window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+	camera.aspect = window.innerWidth / window.innerHeight
+	camera.updateProjectionMatrix()
+
+	renderer.setSize(window.innerWidth, window.innerHeight)
+	renderer.setPixelRatio(window.devicePixelRatio)
 })
 
-// 创建环境光
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
-
-// 创建OrbitControls对象
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-
-function animate() { 
-  pivotPoint.rotation.y += 0.01
-  earth.rotation.y += 0.003
-  moon.rotation.y += 0.0001
-  requestAnimationFrame(animate);
-  controls.update()
-  renderer.render(scene, camera);
-}  
-
-animate()
+function animate() {
+	// 设置了autoRotate / enableDamping = true， 需要在render函数中update()
+  controls.update() 
+	renderer.render( scene, camera );
+	requestAnimationFrame( animate );
+}
+animate();
