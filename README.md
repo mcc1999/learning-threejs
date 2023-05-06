@@ -36,12 +36,14 @@
     - [目标：Material贴图-CanvasTexture](https://mcc1999.github.io/learning-threejs/src/pages/02-material_20-main.html) / [【code】](src/examples/02-material/20-main.ts)
     - [目标：Material贴图-VideoTexture && 同时使用多种材质](https://mcc1999.github.io/learning-threejs/src/pages/02-material_21-main.html) / [【code】](src/examples/02-material/21-main.ts)
     - [目标：Material贴图-每个面不一样的颜色](https://mcc1999.github.io/learning-threejs/src/pages/02-material_22-main.html) / [【code】](src/examples/02-material/22-main.ts)
+    - [目标：Material贴图-cubemap for skybox && dynamic cubemap](https://mcc1999.github.io/learning-threejs/src/pages/02-material_23-main.html) / [【code】](src/examples/02-material/23-main.ts)
 
   - 03-light
     - [目标：灯光与阴影](https://mcc1999.github.io/learning-threejs/src/pages/03-light_01-main.html) / [【code】](src/examples/03-light/01-main.ts)
     - [目标：平行光阴影属性](https://mcc1999.github.io/learning-threejs/src/pages/03-light_02-main.html) / [【code】](src/examples/03-light/02-main.ts)
     - [目标：光源-聚光灯](https://mcc1999.github.io/learning-threejs/src/pages/03-light_03-main.html) / [【code】](src/examples/03-light/03-main.ts)
     - [目标：光源-点光源](https://mcc1999.github.io/learning-threejs/src/pages/03-light_04-main.html) / [【code】](src/examples/03-light/04-main.ts)
+    - [目标：半球光](https://mcc1999.github.io/learning-threejs/src/pages/03-light_05-main.html) / [【code】](src/examples/03-light/05-main.ts)
 
   - 04-camera
     - [目标：透视相机和正交相机](https://mcc1999.github.io/learning-threejs/src/pages/04-camera_02-main.html) / [【code】](src/examples/04-camera/02-main.ts)
