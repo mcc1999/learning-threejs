@@ -9,6 +9,8 @@ import './style.css'
  * - 2. light开启平行光会产生动态阴影
  * - 3. 几何体生成阴影
  * - 4. 平面接受阴影
+ * 
+ * -可以使用LightHelper来可视化光照区域
 */
 
 // 1.创建场景scene和摄像头camera
@@ -64,6 +66,8 @@ const ambientLight = new THREE.AmbientLight(0x404040, 0.75)
 const directionalLight = new THREE.DirectionalLight(0xffffff)
 directionalLight.position.set(5, 5, 5)
 directionalLight.castShadow = true
+const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5)
+scene.add(directionalLightHelper)
 scene.add( directionalLight )
 scene.add(ambientLight)
 
