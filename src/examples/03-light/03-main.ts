@@ -67,6 +67,8 @@ spotLight.position.set(5, 5, 5)
 spotLight.castShadow = true
 spotLight.shadow.radius = 10
 spotLight.shadow.mapSize = new THREE.Vector2(2048, 4096)
+// 聚光灯照亮区域跟随cube移动
+// 若想照亮任意坐标区域：创建THREE.Object3D对象，将其位置设定为想要照亮区域，target设为改对象即可
 spotLight.target = cube
 spotLight.angle = Math.PI / 6
 spotLight.distance = 0
