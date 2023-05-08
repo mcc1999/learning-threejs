@@ -44,6 +44,7 @@
     - [目标：光源-聚光灯](https://mcc1999.github.io/learning-threejs/src/pages/03-light_03-main.html) / [【code】](src/examples/03-light/03-main.ts)
     - [目标：光源-点光源](https://mcc1999.github.io/learning-threejs/src/pages/03-light_04-main.html) / [【code】](src/examples/03-light/04-main.ts)
     - [目标：半球光](https://mcc1999.github.io/learning-threejs/src/pages/03-light_05-main.html) / [【code】](src/examples/03-light/05-main.ts)
+    - [目标：光源-点光源按路径path移动](https://mcc1999.github.io/learning-threejs/src/pages/03-light_06-main.html) / [【code】](src/examples/03-light/06-main.ts)
 
   - 04-camera
     - [目标：透视相机和正交相机](https://mcc1999.github.io/learning-threejs/src/pages/04-camera_02-main.html) / [【code】](src/examples/04-camera/02-main.ts)
@@ -71,7 +72,15 @@
     - [目标：音频AudioLoader](https://mcc1999.github.io/learning-threejs/src/pages/07-loader_01-main.html) / [【code】](src/examples/07-loader/01-main.ts)
     - [目标：加载Blender Model](https://mcc1999.github.io/learning-threejs/src/pages/07-loader_02-main.html) / [【code】](src/examples/07-loader/02-main.ts)
 
-  - 08-demos
-    - [目标：全景小行星进场](https://mcc1999.github.io/learning-threejs/src/pages/08-demos_01-main.html) / [【code】](src/examples/08-demos/01-main.ts)
+  - 08-pointCloud
+    - [目标：创建点云-老牛扛Cube](https://mcc1999.github.io/learning-threejs/src/pages/08-pointCloud_01-main.html) / [【code】](src/examples/08-pointCloud/01-main.ts)
+    - [目标：点云-自定义点云形状及每个点的颜色](https://mcc1999.github.io/learning-threejs/src/pages/08-pointCloud_02-main.html) / [【code】](src/examples/08-pointCloud/02-main.ts)
+    - [目标：点云-自定义点云vertex shader && fragment shader](https://mcc1999.github.io/learning-threejs/src/pages/08-pointCloud_03-main.html) / [【code】](src/examples/08-pointCloud/03-main.ts)
+    - [目标：点云-单独改变某个点的位置](https://mcc1999.github.io/learning-threejs/src/pages/08-pointCloud_04-main.html) / [【code】](src/examples/08-pointCloud/04-main.ts)
+    - [目标：点云-向内塌陷/向外爆炸](https://mcc1999.github.io/learning-threejs/src/pages/08-pointCloud_05-main.html) / [【code】](src/examples/08-pointCloud/05-main.ts)
+    - [目标：后期处理-Post-Processing](https://mcc1999.github.io/learning-threejs/src/pages/08-pointCloud_06-main.html) / [【code】](src/examples/08-pointCloud/06-main.ts)
+
+  - 09-demos
+    - [目标：全景小行星进场](https://mcc1999.github.io/learning-threejs/src/pages/09-demos_01-main.html) / [【code】](src/examples/09-demos/01-main.ts)
 
 
