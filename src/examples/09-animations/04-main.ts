@@ -2,8 +2,8 @@ import * as THREE from 'three'
 import * as CANNON from 'cannon-es'
 import dat from 'dat.gui';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import './style.css'
 import CannonDebugger from 'cannon-es-debugger';
+import './style.css'
 
 /**
  * 目标：物理引擎cannon-es
