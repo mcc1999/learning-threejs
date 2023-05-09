@@ -12,6 +12,7 @@
     - [目标：应用dat.gui](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_09-main.html) / [【code】](src/examples/01-basic/09-main.ts)
     - [目标：webGL兼容性合性能监视器](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_11-main.html) / [【code】](src/examples/01-basic/11-main.ts)
     - [目标：keyboard控制](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_12-main.html) / [【code】](src/examples/01-basic/12-main.ts)
+    - [目标：下载WebGL输出为图片/视频](https://mcc1999.github.io/learning-threejs/src/pages/01-basic_13-main.html) / [【code】](src/examples/01-basic/13-main.ts)
 
   - 02-material
     - [目标：使用BufferGeometry创建基础几何体](https://mcc1999.github.io/learning-threejs/src/pages/02-material_01-main.html) / [【code】](src/examples/02-material/01-main.ts)

@@ -18,6 +18,7 @@ export default defineConfig({
            '01-basic_09-main': '/src/pages/01-basic_09-main.html',
            '01-basic_11-main': '/src/pages/01-basic_11-main.html',
            '01-basic_12-main': '/src/pages/01-basic_12-main.html',
+           '01-basic_13-main': '/src/pages/01-basic_13-main.html',
            '02-material_01-main': '/src/pages/02-material_01-main.html',
            '02-material_02-main': '/src/pages/02-material_02-main.html',
            '02-material_03-main': '/src/pages/02-material_03-main.html',

@@ -4,15 +4,13 @@ import { BASE_URL } from './consts';
 import { GUI } from 'dat.gui';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass';
-import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import record from './utils/screenRecorder';
 import './style.css'
 
 /**
- * 目标：后期处理-Post-Processing
- * - 后期处理是一种被广泛使用、用于来实现一个或多个图形效果，例如景深、发光、胶片微粒或是各种类型的抗锯齿的方式。 
- * - 首先，场景被渲染到一个渲染目标上，渲染目标表示的是一块在显存中的缓冲区。 
- * - 接下来，在图像最终被渲染到屏幕之前，一个或多个后期处理过程将滤镜和效果应用到图像缓冲区。
+ * 目标：下载WebGL输出为图片/视频
+ * - 创建WebGlRenderer时设置preserveDrawingBuffer为true，否则从canvas获取的图像是黑屏
 */
 
 // 1.创建场景scene和摄像头camera
@@ -38,7 +36,7 @@ scene.add(ambientLight)
 
 
 // 4. 创建渲染器renderer并设置尺寸
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true});
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
@@ -64,6 +62,9 @@ const guiParams = {
 	scale: 1,
 	implode: false,
 	explode,
+	downLoadPic,
+	recordTime: 5,
+	downLoadVideo,
 }
 const gui = new GUI()
 gui.add(guiParams, 'implode')
@@ -71,6 +72,9 @@ gui.add(guiParams, 'scale', 1, 10).onChange(val => {
 	console.log(guiParams.scale, val);
 })
 gui.add(guiParams, 'explode')
+gui.add(guiParams, 'downLoadPic')
+gui.add(guiParams, 'recordTime', 1, 100, 1)
+gui.add(guiParams, 'downLoadVideo')
 
 function	explode()	{
 	const	dir	= !guiParams.implode ?	1	:	-1;
@@ -91,8 +95,31 @@ function	explode()	{
 	}
 	geometry.attributes.position.needsUpdate = true;
 }
+function downLoadPic() {
+	const imgData	=	renderer.domElement.toDataURL();
+	const a = document.createElement('a');
+	a.href = imgData;
+	a.download = 'WebGl.png';
+	a.click()
+
+}
+function downLoadVideo() {
+	record({
+		resolution: {
+			width: renderer.domElement.width,
+			height: renderer.domElement.height,
+		},
+		recordTime: guiParams.recordTime + 1
+	})
+}
 
 explode()
+
+// 创建一个5 * 5 * 5的cube
+const cubeGeometry = new THREE.SphereGeometry(2, 2, 2)
+const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
+scene.add(cube)
 
 // 实例化效果合成器
 const effectComposer = new EffectComposer(renderer);
@@ -101,13 +128,66 @@ const effectComposer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
 effectComposer.addPass(renderPass);
 
-// GlitchPass
-const glitchPass = new GlitchPass()
-effectComposer.addPass(glitchPass)
+const vertexShader = `
+	varying	vec2	texCoord;
+	void	main()	{
+		texCoord	=	uv;
+		gl_Position	=	projectionMatrix	*	modelViewMatrix	*	vec4(	position,	1.0 );
+	}
+`
+// sampler2D	tDiffuse是上一步effect的render输出
+const fragmentShader = `
+  uniform	sampler2D	tDiffuse;
+	uniform	vec2	center;
+	uniform	float	scale;
+	uniform	vec2	texSize;
+	varying	vec2	texCoord;
+	void	main()	{
+		vec2	tex	=	(texCoord	*	texSize	-	center)	/	scale;
+		tex.y	/=	0.866025404;
+		tex.x	-=	tex.y	*	0.5;
+		vec2	a;
+		if	(tex.x	+	tex.y	-	floor(tex.x)	-	floor(tex.y)	<	1.0)
+		a	=	vec2(floor(tex.x),	floor(tex.y));
+		else	a	=	vec2(ceil(tex.x),	ceil(tex.y));
+		vec2	b	=	vec2(ceil(tex.x),	floor(tex.y));
+		vec2	c	=	vec2(floor(tex.x),	ceil(tex.y));
+		vec3	TEX	=	vec3(tex.x,	tex.y,	1.0	-	tex.x	-	tex.y);
+		vec3	A	=	vec3(a.x,	a.y,	1.0	-	a.x	-	a.y);
+		vec3	B	=	vec3(b.x,	b.y,	1.0	-	b.x	-	b.y);
+		vec3	C	=	vec3(c.x,	c.y,	1.0	-	c.x	-	c.y);
+		float	alen	=	length(TEX	-	A);
+		float	blen	=	length(TEX	-	B);
+		float	clen	=	length(TEX	-	C);
+		vec2	choice;
+		if	(alen	<	blen)	{
+			if	(alen	<	clen)	choice	=	a;
+			else	choice	=	c;
+		}	else	{
+			if	(blen	<	clen)	choice	=	b;
+			else	choice	=	c;
+		}
+		choice.x	+=	choice.y	*	0.5;
+		choice.y	*=	0.866025404;
+		choice	*=	scale	/	texSize;
+		gl_FragColor	=	texture2D(tDiffuse,	choice
+				+	center	/	texSize);
+	}
+`
 
-// DotScreenPass
-const dotScreenPass = new DotScreenPass()
-effectComposer.addPass(dotScreenPass)
+const	customShader	=	{
+	uniforms:	{
+			"tDiffuse":	{	type:	"t",	value:	null},
+			"scale":				{	type:	"f",	value:	1.0	},
+			"texSize":		{	type:	"v2",	value:	new	THREE.Vector2(	50,	50	)	},
+			"center":		{	type:	"v2",	value:	new	THREE.Vector2(	0.5,	0.5	)	},
+	},
+	vertexShader,
+	fragmentShader,
+}
+
+const customEffect = new ShaderPass(customShader)
+effectComposer.addPass(customEffect)
 
 function animate() {
 	// 设置了autoRotate / enableDamping = true， 需要在render函数中update()

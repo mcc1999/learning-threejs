@@ -4,6 +4,10 @@ import './style.css'
 
 /**
  * 目标：点云-自定义点云vertex shader && fragment shader
+ * - Shader Languages：GLSL、HLSL、Cg
+ * - 基于 OpenGL 的 OpenGL Shading Language ，简称 GLSL;
+ * - 基于 DirectX 的 High Level Shading Language,简称 HLSL; 
+ * - NVIDIA 公司的 C for Graphic ，简称 Cg 语言
 */
 
 // 自定义顶点着色器代码
