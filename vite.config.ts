@@ -72,7 +72,12 @@ export default defineConfig({
            '08-pointCloud_04-main': '/src/pages/08-pointCloud_04-main.html',
            '08-pointCloud_05-main': '/src/pages/08-pointCloud_05-main.html',
            '08-pointCloud_06-main': '/src/pages/08-pointCloud_06-main.html',
-           '09-demos_01-main': '/src/pages/09-demos_01-main.html',
+           '09-animations_01-main': '/src/pages/09-animations_01-main.html',
+           '09-animations_02-main': '/src/pages/09-animations_02-main.html',
+           '09-animations_03-main': '/src/pages/09-animations_03-main.html',
+           '09-animations_04-main': '/src/pages/09-animations_04-main.html',
+           '10-demos_01-main': '/src/pages/10-demos_01-main.html',
+           '10-demos_02-main': '/src/pages/10-demos_02-main.html',
  
       },
     },

@@ -81,7 +81,14 @@
     - [目标：点云-向内塌陷/向外爆炸](https://mcc1999.github.io/learning-threejs/src/pages/08-pointCloud_05-main.html) / [【code】](src/examples/08-pointCloud/05-main.ts)
     - [目标：后期处理-Post-Processing](https://mcc1999.github.io/learning-threejs/src/pages/08-pointCloud_06-main.html) / [【code】](src/examples/08-pointCloud/06-main.ts)
 
-  - 09-demos
-    - [目标：全景小行星进场](https://mcc1999.github.io/learning-threejs/src/pages/09-demos_01-main.html) / [【code】](src/examples/09-demos/01-main.ts)
+  - 09-animations
+    - [目标：3D动画模型-加载/播放](https://mcc1999.github.io/learning-threejs/src/pages/09-animations_01-main.html) / [【code】](src/examples/09-animations/01-main.ts)
+    - [目标：3D动画模型-加载/播放2](https://mcc1999.github.io/learning-threejs/src/pages/09-animations_02-main.html) / [【code】](src/examples/09-animations/02-main.ts)
+    - [目标：简单的规则物体碰撞检测Box3/Sphere/Plane](https://mcc1999.github.io/learning-threejs/src/pages/09-animations_03-main.html) / [【code】](src/examples/09-animations/03-main.ts)
+    - [目标：物理引擎cannon-es](https://mcc1999.github.io/learning-threejs/src/pages/09-animations_04-main.html) / [【code】](src/examples/09-animations/04-main.ts)
+
+  - 10-demos
+    - [目标：全景小行星进场](https://mcc1999.github.io/learning-threejs/src/pages/10-demos_01-main.html) / [【code】](src/examples/10-demos/01-main.ts)
+    - [目标：Drag Demo](https://mcc1999.github.io/learning-threejs/src/pages/10-demos_02-main.html) / [【code】](src/examples/10-demos/02-main.ts)
 
 

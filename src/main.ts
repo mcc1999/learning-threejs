@@ -102,6 +102,7 @@ world.addBody(groundBody)
 const cannonMeshes: THREE.Mesh[] = []
 const cannonDebugger = CannonDebugger(scene, world, {
   onInit(body, mesh) {
+    console.log(body);
     mesh.visible = false
     cannonMeshes.push(mesh)
   },
