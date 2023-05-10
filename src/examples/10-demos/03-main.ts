@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import dat from 'dat.gui';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { BASE_URL } from './consts';
+import { BASE_URL } from '../../consts';
 import './style.css'
 
 /**
@@ -26,7 +26,7 @@ const bufferLength = audioAnalyser.analyser.frequencyBinCount
 
 // Scene && Camera
 const scene = new THREE.Scene();
-scene.background = new THREE.Color( 0xf0f0f0 );
+scene.background = new THREE.Color(0x0f0f0f)
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
 camera.position.set(0, 200, 2000)
 
@@ -101,8 +101,7 @@ window.addEventListener('resize', () => {
 // GUI
 const gui = new dat.GUI()
 const guiParams = {
-  barColor: '#9ACD32',
-  floorColor: '#ffffff',
+  color: '#9ACD32',
   audio : {
     volume: 0.5,
     loop: false,
@@ -115,8 +114,7 @@ const guiParams = {
     },
   }
 }
-gui.addColor(guiParams, 'barColor').onChange(color => material.color = new THREE.Color(color))
-gui.addColor(guiParams, 'floorColor').onChange(color => floorMaterial.color = new THREE.Color(color))
+gui.addColor(guiParams, 'color').onChange(color => material.color = new THREE.Color(color))
 const audioFolder = gui.addFolder('audio')
 audioFolder.add(guiParams.audio, 'volume', 0, 1, 0.1).name('Volume').onChange(volume => audio.setVolume(volume))
 audioFolder.add(guiParams.audio, 'loop').name('Loop').onChange(loop => audio.setLoop(loop))
